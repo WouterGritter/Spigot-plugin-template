@@ -97,7 +97,7 @@
                         <configuration>
                             <serverId>ftp-repository</serverId> <!-- References the server declaration in settings.xml -->
                             <fromFile>${project.build.directory}/${project.build.finalName}.jar</fromFile>
-                            <url>ftp://localhost:22221/</url>
+                            <url>ftp://localhost/1_8_8</url>
                             <toFile>plugins/${project.build.finalName}.jar</toFile>
                         </configuration>
                     </execution>
