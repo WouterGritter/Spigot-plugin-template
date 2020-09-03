@@ -14,16 +14,18 @@ public class GUIItem {
     }
 
     public boolean insert(Inventory inv, Object... args) {
-        return insert(inv.getContents(), args);
+        int slot = calculateSlot(inv.getSize());
+
+        if(slot < 0 || slot >= inv.getSize()) {
+            return false;
+        }
+
+        inv.setItem(slot, ItemUtils.formatItemStack(itemStack.clone(), args));
+        return true;
     }
 
     public boolean insert(ItemStack[] contents, Object... args) {
-        int slot;
-        if(relativeSlot >= 0) {
-            slot = relativeSlot;
-        }else{
-            slot = contents.length - Math.abs(relativeSlot);
-        }
+        int slot = calculateSlot(contents.length);
 
         if(slot < 0 || slot >= contents.length) {
             return false;
@@ -31,6 +33,14 @@ public class GUIItem {
 
         contents[slot] = ItemUtils.formatItemStack(itemStack.clone(), args);
         return true;
+    }
+
+    public int calculateSlot(int invSize) {
+        if(relativeSlot >= 0) {
+            return relativeSlot;
+        }else{
+            return invSize - Math.abs(relativeSlot);
+        }
     }
 
     public int getRelativeSlot() {
