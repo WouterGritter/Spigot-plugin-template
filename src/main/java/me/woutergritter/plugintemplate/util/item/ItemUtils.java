@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -98,6 +99,30 @@ public class ItemUtils {
 
                 int level = conf.getInt("enchantments." + enchantmentName, 1);
                 itemMeta.addEnchant(enchantment, level, true);
+            });
+        }
+
+        if(conf.contains("hide-tooltips")) {
+            boolean hideTooltips = conf.getBoolean("hide-tooltips");
+            if(hideTooltips) {
+                for(ItemFlag itemFlag : ItemFlag.values()) {
+                    if(itemFlag.name().startsWith("HIDE_")) {
+                        itemMeta.addItemFlags(itemFlag);
+                    }
+                }
+            }
+        }
+
+        if(conf.contains("item-flags")) {
+            conf.getStringList("item-flags").forEach(itemFlagStr -> {
+                ItemFlag itemFlag;
+                try{
+                    itemFlag = ItemFlag.valueOf(itemFlagStr.toUpperCase());
+                }catch(IllegalArgumentException e) {
+                    return;
+                }
+
+                itemMeta.addItemFlags(itemFlag);
             });
         }
 
