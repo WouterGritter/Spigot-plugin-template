@@ -13,26 +13,30 @@ public class GUIItem {
         this.itemStack = itemStack;
     }
 
-    public boolean insert(Inventory inv, Object... args) {
+    public ItemStack insert(Inventory inv, Object... args) {
         int slot = calculateSlot(inv.getSize());
 
         if(slot < 0 || slot >= inv.getSize()) {
-            return false;
+            return null;
         }
 
-        inv.setItem(slot, ItemUtils.formatItemStack(itemStack.clone(), args));
-        return true;
+        ItemStack inserted = ItemUtils.formatItemStack(itemStack.clone(), args);
+        inv.setItem(slot, inserted);
+
+        return inserted;
     }
 
-    public boolean insert(ItemStack[] contents, Object... args) {
+    public ItemStack insert(ItemStack[] contents, Object... args) {
         int slot = calculateSlot(contents.length);
 
         if(slot < 0 || slot >= contents.length) {
-            return false;
+            return null;
         }
 
-        contents[slot] = ItemUtils.formatItemStack(itemStack.clone(), args);
-        return true;
+        ItemStack inserted = ItemUtils.formatItemStack(itemStack.clone(), args);
+        contents[slot] = inserted;
+
+        return inserted;
     }
 
     public int calculateSlot(int invSize) {
