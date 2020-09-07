@@ -43,6 +43,22 @@ public class GUIItem {
         }
     }
 
+    public boolean is(int slot, int invSize) {
+        return calculateSlot(invSize) == slot;
+    }
+
+    public boolean is(int slot, ItemStack[] contents) {
+        return is(slot, contents.length);
+    }
+
+    public boolean is(int slot, Inventory inv) {
+        return is(slot, inv.getSize());
+    }
+
+    public boolean is(ItemStack other) {
+        return itemStack.isSimilar(other);
+    }
+
     public int getRelativeSlot() {
         return relativeSlot;
     }
@@ -60,7 +76,7 @@ public class GUIItem {
     }
 
     public static GUIItem fromConfig(ConfigurationSection conf) {
-        int relativeSlot = conf.getInt("slot", 0);
+        int relativeSlot = conf.getInt("slot");
         ItemStack itemStack = ItemUtils.fromConfig(conf);
 
         if(itemStack == null) {
