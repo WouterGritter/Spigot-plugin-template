@@ -13,10 +13,12 @@ import java.util.Objects;
 
 public class Config extends YamlConfiguration {
     private final Main plugin;
+    private final String name;
     private final File file;
 
     public Config(Main plugin, String name) {
         this.plugin = plugin;
+        this.name = name;
         this.file = new File(plugin.getDataFolder(), name);
 
         saveDefault();
@@ -24,7 +26,7 @@ public class Config extends YamlConfiguration {
     }
 
     public boolean hasDefaults() {
-        return plugin.getResource(file.getName()) != null;
+        return plugin.getResource(name) != null;
     }
 
     public void reload() {
@@ -37,7 +39,7 @@ public class Config extends YamlConfiguration {
         }
 
         if(hasDefaults()) {
-            InputStreamReader defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource(file.getName())));
+            InputStreamReader defConfigStream = new InputStreamReader(Objects.requireNonNull(plugin.getResource(name)));
             YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 
             setDefaults(defConfig);
@@ -59,7 +61,7 @@ public class Config extends YamlConfiguration {
             file.getParentFile().mkdirs();
 
             if(hasDefaults()) {
-                plugin.saveResource(file.getName(), false);
+                plugin.saveResource(name, false);
             }else{
                 try {
                     file.createNewFile();
@@ -70,11 +72,12 @@ public class Config extends YamlConfiguration {
         }
     }
 
-    public String getName() {
-        return file.getName();
-    }
-
     public File getFile() {
         return file;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }
