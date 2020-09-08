@@ -53,17 +53,18 @@
         <defaultGoal>clean install</defaultGoal>
 
         <resources>
+            <!-- Keeping filtering at true here reduces plugin.yml redundancy! -->
             <resource>
                 <directory>src/main/resources</directory>
-                <!-- Keeping filtering at true here reduces plugin.yml redundancy! -->
                 <filtering>true</filtering>
                 <includes>
                     <include>plugin.yml</include>
                 </includes>
             </resource>
+
+            <!-- Keep filtering at false for other resources to prevent bad magic -->
             <resource>
                 <directory>src/main/resources</directory>
-                <!-- Keep filtering at false for other resources to prevent bad magic -->
                 <filtering>false</filtering>
                 <excludes>
                     <exclude>**/*.java</exclude>
@@ -73,6 +74,7 @@
         </resources>
 
         <plugins>
+            <!-- Java version -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -83,6 +85,28 @@
                 </configuration>
             </plugin>
 
+            <!-- FTP upload of final jar file on install phase -->
+            <!-- Add this to settings.xml:
+            <servers>
+                <server>
+                    <id>ftp-repository</id>
+                    <username>USERNAME</username>
+                    <password>PASSWORD</password>
+                </server>
+            </servers>
+
+            <profiles>
+                <profile>
+                    <id>FTP upload</id>
+                    <activation>
+                        <activeByDefault>true</activeByDefault>
+                    </activation>
+                    <properties>
+                        <ftpUrl>ftp://SERVER/PATH/TO/MC_SERVER/</ftpUrl>
+                    </properties>
+                </profile>
+            </profiles>
+            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>wagon-maven-plugin</artifactId>
@@ -95,9 +119,9 @@
                             <goal>upload-single</goal>
                         </goals>
                         <configuration>
-                            <serverId>ftp-repository</serverId> <!-- References the server declaration in settings.xml -->
+                            <serverId>ftp-repository</serverId>
                             <fromFile>${project.build.directory}/${project.build.finalName}.jar</fromFile>
-                            <url>ftp://localhost/1_8_8</url>
+                            <url>${ftpUrl}</url>
                             <toFile>plugins/${project.build.finalName}.jar</toFile>
                         </configuration>
                     </execution>
