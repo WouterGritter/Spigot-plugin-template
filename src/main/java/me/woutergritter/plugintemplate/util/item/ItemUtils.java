@@ -1,5 +1,6 @@
 package me.woutergritter.plugintemplate.util.item;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -153,5 +154,74 @@ public class ItemUtils {
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
+    }
+
+    /**
+     * Performs a check similar to {@link ItemStack#isSimilar(ItemStack)}
+     * but with items that have been passed through {@link ItemUtils#formatItemStack(ItemStack, Object...)}
+     */
+    public static boolean isSimilarFormatted(ItemStack a, ItemStack b) {
+        if(a == b) {
+            return true;
+        }
+
+        if(a == null || b == null || a.getType() != b.getType() ||
+                a.getDurability() != b.getDurability()) {
+            return false;
+        }
+
+        ItemMeta aMeta = a.getItemMeta();
+        ItemMeta bMeta = b.getItemMeta();
+
+        if(aMeta == bMeta) {
+            return true;
+        }
+
+        if(aMeta == null || bMeta == null) {
+            return false;
+        }
+
+        // Check if they both have or don't have a display name, same with lore.
+        if(aMeta.hasDisplayName() != bMeta.hasDisplayName() ||
+                aMeta.hasLore() != bMeta.hasLore()) {
+            return false;
+        }
+
+        // Only check if aMeta has display name and lore, because we know they're both the same.
+        boolean hasDisplayName = aMeta.hasDisplayName();
+        boolean hasLore = aMeta.hasLore();
+
+        if(hasDisplayName) {
+            // Remove display name with '%' for String#format calls
+            if(aMeta.getDisplayName().contains("%") ||
+                    bMeta.getDisplayName().contains("%")) {
+                aMeta.setDisplayName(null);
+                bMeta.setDisplayName(null);
+            }
+        }
+
+        if(hasLore) {
+            List<String> aLore = aMeta.getLore();
+            List<String> bLore = bMeta.getLore();
+
+            if(aLore.size() != bLore.size()) {
+                return false;
+            }
+
+            // Remove lines with '%' for String#format calls
+            for(int i = 0; i < aLore.size(); i++) {
+                if(aLore.get(i).contains("%") ||
+                        bLore.get(i).contains("%")) {
+                    aLore.remove(i);
+                    bLore.remove(i);
+                    i--;
+                }
+            }
+
+            aMeta.setLore(aLore);
+            bMeta.setLore(bLore);
+        }
+
+        return Bukkit.getItemFactory().equals(aMeta, bMeta);
     }
 }
