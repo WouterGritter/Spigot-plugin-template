@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
 
-public class SimpleGUI implements Listener {
+public class ManagedInventory implements Listener {
     private final Main plugin;
     private final Inventory inventory;
     private final Player player;
@@ -25,8 +25,8 @@ public class SimpleGUI implements Listener {
     private boolean isOpened = false;
     private boolean isClosed = false;
 
-    public SimpleGUI(Main plugin, Player player, Inventory inventory,
-                     Consumer<InventoryClickEvent> onClick, Consumer<InventoryCloseEvent> onClose) {
+    public ManagedInventory(Main plugin, Player player, Inventory inventory,
+                            Consumer<InventoryClickEvent> onClick, Consumer<InventoryCloseEvent> onClose) {
         this.plugin = plugin;
         this.player = player;
         this.inventory = inventory;
@@ -35,8 +35,8 @@ public class SimpleGUI implements Listener {
         this.onClose = onClose;
     }
 
-    public SimpleGUI(Main plugin, Player player, String inventoryTitle, ItemStack[] inventoryContents,
-                     Consumer<InventoryClickEvent> onClick, Consumer<InventoryCloseEvent> onClose) {
+    public ManagedInventory(Main plugin, Player player, String inventoryTitle, ItemStack[] inventoryContents,
+                            Consumer<InventoryClickEvent> onClick, Consumer<InventoryCloseEvent> onClose) {
         if(inventoryContents.length % 9 != 0 || inventoryContents.length > 9 * 6) {
             throw new IllegalArgumentException("Invalid inventory contents length.");
         }
@@ -49,10 +49,9 @@ public class SimpleGUI implements Listener {
 
         this.onClick = onClick;
         this.onClose = onClose;
-
     }
 
-    public SimpleGUI open() {
+    public ManagedInventory open() {
         if(isOpened) {
             throw new IllegalStateException("The inventory is or was already opened.");
         }
