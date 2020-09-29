@@ -46,6 +46,10 @@ public abstract class GUI<T extends GUIParams> {
         return new GUIInventory<T>(this, params, formattedTitleArgs);
     }
 
+    protected void createItem(GUIItem item, String itemName) {
+        items.put(itemName, item);
+    }
+
     protected GUIItem getItem(String itemName) {
         return items.get(itemName);
     }
