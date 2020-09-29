@@ -15,7 +15,7 @@ public class GUIInventory<T extends GUIParams> {
 
     private boolean opened = false;
 
-    private Map<String, GUIItem> customItems = new HashMap<>();
+    private final Map<String, GUIItem> customItems = new HashMap<>();
 
     protected GUIInventory(GUI<T> parent, T params, Object... formattedTitleArgs) {
         this.parent = parent;
