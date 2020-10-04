@@ -2,6 +2,7 @@ package me.woutergritter.plugintemplate.config;
 
 import me.woutergritter.plugintemplate.Main;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -36,6 +37,13 @@ public class LangConfig extends Config {
         String message = getMessage(path, args);
         if(!message.isEmpty()) {
             player.sendMessage(StringUtils.split(message, '\n'));
+        }
+    }
+
+    public void broadcast(String path, Object... args) {
+        String message = getMessage(path, args);
+        if(!message.isEmpty()) {
+            Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(message));
         }
     }
 }
