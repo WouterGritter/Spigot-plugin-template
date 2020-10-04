@@ -79,6 +79,10 @@ public class GUIInventory<T extends GUIParams> {
             item.insert(inventory, slot, formattedItemArgs);
         }
 
+        if(opened) {
+            params.player.updateInventory();
+        }
+
         return this;
     }
 
@@ -98,6 +102,10 @@ public class GUIInventory<T extends GUIParams> {
 
     public GUIInventory<T> insertRaw(int slot, ItemStack item) {
         inventory.setItem(slot, item);
+
+        if(opened) {
+            params.player.updateInventory();
+        }
 
         return this;
     }
