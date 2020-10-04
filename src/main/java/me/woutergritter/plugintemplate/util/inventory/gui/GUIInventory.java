@@ -140,4 +140,12 @@ public class GUIInventory<T extends GUIParams> {
 
         return parent.getItemName(lookup, slot);
     }
+
+    public GUI<T> getParent() {
+        return parent;
+    }
+
+    public T getParams() {
+        return params;
+    }
 }
