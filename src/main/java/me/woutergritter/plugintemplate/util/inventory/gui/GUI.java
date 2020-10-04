@@ -3,10 +3,12 @@ package me.woutergritter.plugintemplate.util.inventory.gui;
 import me.woutergritter.plugintemplate.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +20,8 @@ public abstract class GUI<T extends GUIParams> {
     protected int height;
 
     private final Map<String, GUIItem> items = new HashMap<>();
+
+    protected final Map<Player, GUIInventory<T>> playersInGUI = new HashMap<>();
 
     public GUI(Main plugin, ConfigurationSection conf) {
         this.plugin = plugin;
@@ -63,6 +67,10 @@ public abstract class GUI<T extends GUIParams> {
         }
 
         return null;
+    }
+
+    public Map<Player, GUIInventory<T>> getPlayersInGUI() {
+        return Collections.unmodifiableMap(playersInGUI);
     }
 
     private boolean loadItem(ConfigurationSection itemConf) {

@@ -45,8 +45,14 @@ public class GUIInventory<T extends GUIParams> {
 
                     parent.onClickEvent(params, clickedItem, clickEvent);
                 },
-                closeEvent -> parent.onCloseEvent(params, closeEvent)
+                closeEvent -> {
+                    parent.playersInGUI.remove(params.player);
+
+                    parent.onCloseEvent(params, closeEvent);
+                }
         ).open();
+
+        parent.playersInGUI.put(params.player, this);
 
         return this;
     }
