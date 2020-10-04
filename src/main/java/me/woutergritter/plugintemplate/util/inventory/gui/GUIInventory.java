@@ -96,6 +96,12 @@ public class GUIInventory<T extends GUIParams> {
         return this;
     }
 
+    public GUIInventory<T> insertRaw(int slot, ItemStack item) {
+        inventory.setItem(slot, item);
+
+        return this;
+    }
+
     public GUIInventory<T> createCustom(GUIItem item, String itemName) {
         customItems.put(itemName, item);
 
