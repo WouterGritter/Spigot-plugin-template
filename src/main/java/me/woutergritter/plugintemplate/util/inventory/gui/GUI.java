@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class GUI<T extends GUIParams> {
-    protected final Main plugin;
     protected final ConfigurationSection conf;
 
     protected String title;
@@ -23,8 +22,7 @@ public abstract class GUI<T extends GUIParams> {
 
     protected final Map<Player, GUIInventory<T>> playersInGUI = new HashMap<>();
 
-    public GUI(Main plugin, ConfigurationSection conf) {
-        this.plugin = plugin;
+    public GUI(ConfigurationSection conf) {
         this.conf = conf;
 
         this.title = ChatColor.translateAlternateColorCodes('&', conf.getString("title", "Title"));
@@ -35,7 +33,7 @@ public abstract class GUI<T extends GUIParams> {
             ConfigurationSection itemConf = itemsConf.getConfigurationSection(key);
             boolean success = loadItem(itemConf);
             if(!success) {
-                plugin.getLogger().warning("Could not load item '" + key + "' for GUI '" + title + "'.");
+                Main.instance().getLogger().warning("Could not load item '" + key + "' for GUI '" + title + "'.");
             }
         });
     }

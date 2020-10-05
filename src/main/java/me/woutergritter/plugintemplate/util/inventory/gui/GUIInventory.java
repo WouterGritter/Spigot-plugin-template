@@ -32,8 +32,7 @@ public class GUIInventory<T extends GUIParams> {
 
         opened = true;
 
-        new ManagedInventory(parent.plugin,
-                params.player,
+        new ManagedInventory(params.player,
                 inventory,
                 clickEvent -> {
                     String clickedItem = null;

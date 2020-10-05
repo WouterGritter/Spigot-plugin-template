@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class LangConfig extends Config {
-    public LangConfig(Main plugin, String name) {
-        super(plugin, name);
+    public LangConfig(String name) {
+        super(name);
     }
 
     public String getMessage(String path, Object... args) {

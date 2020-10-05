@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.Consumer;
 
 public class ManagedInventory implements Listener {
-    private final Main plugin;
     private final Inventory inventory;
     private final Player player;
 
@@ -25,9 +24,8 @@ public class ManagedInventory implements Listener {
     private boolean isOpened = false;
     private boolean isClosed = false;
 
-    public ManagedInventory(Main plugin, Player player, Inventory inventory,
+    public ManagedInventory(Player player, Inventory inventory,
                             Consumer<InventoryClickEvent> onClick, Consumer<InventoryCloseEvent> onClose) {
-        this.plugin = plugin;
         this.player = player;
         this.inventory = inventory;
 
@@ -35,13 +33,12 @@ public class ManagedInventory implements Listener {
         this.onClose = onClose;
     }
 
-    public ManagedInventory(Main plugin, Player player, String inventoryTitle, ItemStack[] inventoryContents,
+    public ManagedInventory(Player player, String inventoryTitle, ItemStack[] inventoryContents,
                             Consumer<InventoryClickEvent> onClick, Consumer<InventoryCloseEvent> onClose) {
         if(inventoryContents.length % 9 != 0 || inventoryContents.length > 9 * 6) {
             throw new IllegalArgumentException("Invalid inventory contents length.");
         }
 
-        this.plugin = plugin;
         this.player = player;
 
         this.inventory = Bukkit.createInventory(null, inventoryContents.length, inventoryTitle);
@@ -59,7 +56,7 @@ public class ManagedInventory implements Listener {
         isOpened = true;
         player.openInventory(inventory);
 
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+        Bukkit.getPluginManager().registerEvents(this, Main.instance());
 
         return this;
     }
@@ -73,7 +70,7 @@ public class ManagedInventory implements Listener {
         try{
             onClick.accept(e);
         }catch(Exception ex) {
-            plugin.getLogger().warning("An exception occurred when processing a GUI click for player " + e.getWhoClicked().getName() + ": " + ex.toString());
+            Main.instance().getLogger().warning("An exception occurred when processing a GUI click for player " + e.getWhoClicked().getName() + ": " + ex.toString());
             ex.printStackTrace();
         }
     }
@@ -87,7 +84,7 @@ public class ManagedInventory implements Listener {
         try{
             onClose.accept(e);
         }catch(Exception ex) {
-            plugin.getLogger().warning("An exception occurred when processing a GUI close for player " + e.getPlayer().getName() + ": " + ex.toString());
+            Main.instance().getLogger().warning("An exception occurred when processing a GUI close for player " + e.getPlayer().getName() + ": " + ex.toString());
             ex.printStackTrace();
         }
 
@@ -98,7 +95,7 @@ public class ManagedInventory implements Listener {
 
     @EventHandler
     public void onPluginDisableEvent(PluginDisableEvent e) {
-        if(e.getPlugin() != plugin) {
+        if(e.getPlugin() != Main.instance()) {
             return;
         }
 

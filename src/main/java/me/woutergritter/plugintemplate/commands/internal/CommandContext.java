@@ -7,14 +7,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CommandContext {
-    private final Main plugin;
     private final WCommand command;
 
     private final CommandSender sender;
     private final String[] args;
 
-    protected CommandContext(Main plugin, WCommand command, CommandSender sender, String[] args) {
-        this.plugin = plugin;
+    protected CommandContext(WCommand command, CommandSender sender, String[] args) {
         this.command = command;
 
         this.sender = sender;
@@ -60,14 +58,14 @@ public class CommandContext {
      * COMMAND-cmd.PATH
      */
     public void send(String path, Object... args) {
-        plugin.getLang().sendMessage(sender, command.getCommand() + "-cmd." + path, args);
+        Main.instance().getLang().sendMessage(sender, command.getCommand() + "-cmd." + path, args);
     }
 
     /**
      * Uses the actual path that is given in the arguments.
      */
     public void sendAbsolute(String absolutePath, Object... args) {
-        plugin.getLang().sendMessage(sender, absolutePath, args);
+        Main.instance().getLang().sendMessage(sender, absolutePath, args);
     }
 
     public Player checkPlayer() {

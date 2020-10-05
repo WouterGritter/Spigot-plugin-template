@@ -1,6 +1,5 @@
 package me.woutergritter.plugintemplate.commands.internal;
 
-import me.woutergritter.plugintemplate.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -9,12 +8,11 @@ import org.bukkit.command.CommandSender;
 import java.lang.reflect.Field;
 
 public abstract class WCommand extends Command {
-    protected final Main plugin;
     protected final String command;
 
-    public WCommand(Main plugin, String command) {
+    public WCommand(String command) {
         super(command);
-        this.plugin = plugin;
+
         this.command = command;
     }
 
@@ -22,7 +20,7 @@ public abstract class WCommand extends Command {
 
     @Override
     public final boolean execute(CommandSender sender, String label, String[] args) {
-        CommandContext ctx = new CommandContext(plugin, this, sender, args);
+        CommandContext ctx = new CommandContext(this, sender, args);
 
         try{
             this.execute(ctx);
