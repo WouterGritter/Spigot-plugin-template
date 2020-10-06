@@ -40,9 +40,9 @@ public abstract class GUI<T extends GUIParams> {
 
     public abstract void open(T params);
 
-    protected abstract void onClickEvent(T params, String clickedItem, InventoryClickEvent e);
+    protected abstract void onClickEvent(T params, String clickedItem, GUIInventory<T> gui, InventoryClickEvent e);
 
-    protected abstract void onCloseEvent(T params, InventoryCloseEvent e);
+    protected abstract void onCloseEvent(T params, GUIInventory<T> gui, InventoryCloseEvent e);
 
     protected GUIInventory<T> create(T params, Object... formattedTitleArgs) {
         return new GUIInventory<T>(this, params, formattedTitleArgs);

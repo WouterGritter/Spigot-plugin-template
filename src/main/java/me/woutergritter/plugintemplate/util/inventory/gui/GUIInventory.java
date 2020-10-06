@@ -42,12 +42,12 @@ public class GUIInventory<T extends GUIParams> {
                         clickedItem = getItemName(clickEvent.getCurrentItem(), clickEvent.getSlot());
                     }
 
-                    parent.onClickEvent(params, clickedItem, clickEvent);
+                    parent.onClickEvent(params, clickedItem, this, clickEvent);
                 },
                 closeEvent -> {
                     parent.playersInGUI.remove(params.player);
 
-                    parent.onCloseEvent(params, closeEvent);
+                    parent.onCloseEvent(params, this, closeEvent);
                 }
         ).open();
 
