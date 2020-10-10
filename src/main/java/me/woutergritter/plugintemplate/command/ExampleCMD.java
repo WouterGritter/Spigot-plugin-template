@@ -1,7 +1,7 @@
-package me.woutergritter.plugintemplate.commands;
+package me.woutergritter.plugintemplate.command;
 
-import me.woutergritter.plugintemplate.commands.internal.CommandContext;
-import me.woutergritter.plugintemplate.commands.internal.WCommand;
+import me.woutergritter.plugintemplate.command.internal.CommandContext;
+import me.woutergritter.plugintemplate.command.internal.WCommand;
 
 public class ExampleCMD extends WCommand {
     public ExampleCMD() {

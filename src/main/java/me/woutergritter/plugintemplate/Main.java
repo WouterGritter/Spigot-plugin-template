@@ -1,6 +1,6 @@
 package me.woutergritter.plugintemplate;
 
-import me.woutergritter.plugintemplate.commands.ExampleCMD;
+import me.woutergritter.plugintemplate.command.ExampleCMD;
 import me.woutergritter.plugintemplate.config.Config;
 import me.woutergritter.plugintemplate.config.LangConfig;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -1,4 +1,4 @@
-package me.woutergritter.plugintemplate.commands.internal;
+package me.woutergritter.plugintemplate.command.internal;
 
 public class CommandInterrupt extends RuntimeException {
     private final boolean absolutePath;

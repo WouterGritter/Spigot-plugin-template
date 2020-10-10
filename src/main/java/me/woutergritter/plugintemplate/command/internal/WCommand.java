@@ -1,4 +1,4 @@
-package me.woutergritter.plugintemplate.commands.internal;
+package me.woutergritter.plugintemplate.command.internal;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
