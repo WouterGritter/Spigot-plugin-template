@@ -7,7 +7,7 @@ import org.bukkit.block.Block;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 
 public class BukkitDataOutputStream extends DataOutputStream {
@@ -47,15 +47,17 @@ public class BukkitDataOutputStream extends DataOutputStream {
         t.serialize(this);
     }
 
-    public <T> void writeList(List<T> list, ThrowingBiConsumer<T, BukkitDataOutputStream, IOException> serializeFunction) throws IOException {
-        writeInt(list.size());
+    public <T> void writeList(Collection<T> list, ThrowingBiConsumer<T, BukkitDataOutputStream, IOException> serializeFunction) throws IOException {
+        writeInt(list != null ? list.size() : 0);
 
-        for(T t : list) {
-            serializeFunction.accept(t, this);
+        if(list != null) {
+            for (T t : list) {
+                serializeFunction.accept(t, this);
+            }
         }
     }
 
-    public <T extends Serializable> void writeList(List<T> list) throws IOException {
+    public <T extends Serializable> void writeList(Collection<T> list) throws IOException {
         writeList(list, (t, dos) -> write(t));
     }
 }
