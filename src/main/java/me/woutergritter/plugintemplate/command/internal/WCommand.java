@@ -1,5 +1,6 @@
 package me.woutergritter.plugintemplate.command.internal;
 
+import me.woutergritter.plugintemplate.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -38,7 +39,7 @@ public abstract class WCommand extends Command {
     public void register() {
         CommandMap commandMap = getCommandMap();
         if(commandMap != null) {
-            commandMap.register(command, this);
+            commandMap.register(Main.instance().getName(), this);
         }
     }
 
