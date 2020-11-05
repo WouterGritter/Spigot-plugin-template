@@ -7,6 +7,8 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class WCommand extends Command {
     protected final String command;
@@ -58,5 +60,26 @@ public abstract class WCommand extends Command {
         }
 
         return null;
+    }
+
+    public static List<String> tabCompletePossibilities(String arg, boolean caseSensitive, String... possibilities) {
+        List<String> res = new ArrayList<>();
+
+        if(!caseSensitive) {
+            arg = arg.toLowerCase();
+        }
+
+        for(String str : possibilities) {
+            String compare = str;
+            if(!caseSensitive) {
+                compare = compare.toLowerCase();
+            }
+
+            if(compare.startsWith(arg)) {
+                res.add(str);
+            }
+        }
+
+        return res;
     }
 }
