@@ -3,6 +3,8 @@ package me.woutergritter.plugintemplate.util.serialization;
 import me.woutergritter.plugintemplate.util.function.ThrowingBiConsumer;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,6 +15,10 @@ import java.util.UUID;
 public class BukkitDataOutputStream extends DataOutputStream {
     public BukkitDataOutputStream(OutputStream out) {
         super(out);
+    }
+
+    public <T extends Serializable> void write(T t) throws IOException {
+        t.serialize(this);
     }
 
     public void writeLocation(Location location) throws IOException {
@@ -43,9 +49,15 @@ public class BukkitDataOutputStream extends DataOutputStream {
         writeUTF(e.name());
     }
 
-    public <T extends Serializable> void write(T t) throws IOException {
-        t.serialize(this);
+    public void writeItemStackYaml(ItemStack itemStack) throws IOException {
+        // Hacky way of writing an ItemStack, I know..
+        YamlConfiguration yaml = new YamlConfiguration();
+        yaml.set("v", itemStack);
+
+        writeUTF(yaml.saveToString());
     }
+
+    // -- Lists and maps -- //
 
     public <T> void writeList(Collection<T> list, ThrowingBiConsumer<T, BukkitDataOutputStream, IOException> serializeFunction) throws IOException {
         writeInt(list != null ? list.size() : 0);

@@ -5,6 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -18,6 +21,18 @@ import java.util.UUID;
 public class BukkitDataInputStream extends DataInputStream {
     public BukkitDataInputStream(InputStream in) {
         super(in);
+    }
+
+    public <T extends Serializable> T read(Class<T> clazz) {
+        try {
+            Method deserialize = clazz.getMethod("deserialize", BukkitDataInputStream.class);
+
+            return (T) deserialize.invoke(null, this);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassCastException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public Location readLocation() throws IOException {
@@ -62,17 +77,21 @@ public class BukkitDataInputStream extends DataInputStream {
         return Enum.valueOf(enumType, readUTF());
     }
 
-    public <T extends Serializable> T read(Class<T> clazz) {
-        try {
-            Method deserialize = clazz.getMethod("deserialize", BukkitDataInputStream.class);
+    public ItemStack readItemStackYaml() throws IOException {
+        // Hacky way of writing an ItemStack, I know..
+        String yamlStr = readUTF();
 
-            return (T) deserialize.invoke(null, this);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassCastException e) {
-            e.printStackTrace();
+        YamlConfiguration yaml = new YamlConfiguration();
+        try{
+            yaml.loadFromString(yamlStr);
+        }catch(InvalidConfigurationException ex) {
+            return null;
         }
 
-        return null;
+        return yaml.getItemStack("v");
     }
+
+    // -- Lists and maps -- //
 
     public <T> List<T> readList(ThrowingFunction<BukkitDataInputStream, T, IOException> deserializeFunction) throws IOException {
         int size = readInt();
