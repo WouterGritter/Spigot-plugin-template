@@ -99,7 +99,9 @@ public class BukkitDataInputStream extends DataInputStream {
 
         for(int i = 0; i < size; i++) {
             T t = deserializeFunction.apply(this);
-            list.add(t);
+            if(t != null) {
+                list.add(t);
+            }
         }
 
         return list;
