@@ -1,6 +1,7 @@
 package me.woutergritter.plugintemplate.util.serialization;
 
 import me.woutergritter.plugintemplate.util.function.ThrowingBiConsumer;
+import me.woutergritter.plugintemplate.util.function.ThrowingConsumer;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -56,27 +57,46 @@ public class BukkitDataOutputStream extends DataOutputStream {
 
     // -- Lists and maps -- //
 
-    public <T> void writeList(Collection<T> list, ThrowingBiConsumer<BukkitDataOutputStream, T, IOException> serializeFunction) throws IOException {
+    public <T> void writeList(Collection<T> list, ThrowingBiConsumer<T, BukkitDataOutputStream, IOException> serializeFunction) throws IOException {
         writeInt(list != null ? list.size() : 0);
 
         if(list != null) {
-            for (T t : list) {
-                serializeFunction.accept(this, t);
+            for (T element : list) {
+                serializeFunction.accept(element, this);
             }
         }
     }
 
-    public <T, U> void writeMap(Map<T, U> map, ThrowingBiConsumer<BukkitDataOutputStream, T, IOException> keySerializeFunction,
-                                ThrowingBiConsumer<BukkitDataOutputStream, U, IOException> valueSerializeFunction) throws IOException {
+    public <T> void writeList(Collection<T> list, ThrowingConsumer<T, IOException> serializeFunction) throws IOException {
+        writeList(list, (element, _dos) -> serializeFunction.accept(element));
+    }
+
+    public <T, U> void writeMap(Map<T, U> map, ThrowingBiConsumer<T, BukkitDataOutputStream, IOException> keySerializeFunction,
+                                ThrowingBiConsumer<U, BukkitDataOutputStream, IOException> valueSerializeFunction) throws IOException {
         writeInt(map != null ? map.size() : 0);
 
         if(map != null) {
             for(T key : map.keySet()) {
                 U value = map.get(key);
 
-                keySerializeFunction.accept(this, key);
-                valueSerializeFunction.accept(this, value);
+                keySerializeFunction.accept(key, this);
+                valueSerializeFunction.accept(value, this);
             }
         }
+    }
+
+    public <T, U> void writeMap(Map<T, U> map, ThrowingBiConsumer<T, BukkitDataOutputStream, IOException> keySerializeFunction,
+                                ThrowingConsumer<U, IOException> valueSerializeFunction) throws IOException {
+        writeMap(map, keySerializeFunction, (value, _dos) -> valueSerializeFunction.accept(value));
+    }
+
+    public <T, U> void writeMap(Map<T, U> map, ThrowingConsumer<T, IOException> keySerializeFunction,
+                                ThrowingBiConsumer<U, BukkitDataOutputStream, IOException> valueSerializeFunction) throws IOException {
+        writeMap(map, (key, _dos) -> keySerializeFunction.accept(key), valueSerializeFunction);
+    }
+
+    public <T, U> void writeMap(Map<T, U> map, ThrowingConsumer<T, IOException> keySerializeFunction,
+                                ThrowingConsumer<U, IOException> valueSerializeFunction) throws IOException {
+        writeMap(map, (key, _dos) -> keySerializeFunction.accept(key), (value, _dos) -> valueSerializeFunction.accept(value));
     }
 }

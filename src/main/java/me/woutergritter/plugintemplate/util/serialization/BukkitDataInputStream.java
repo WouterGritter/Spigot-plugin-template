@@ -1,6 +1,7 @@
 package me.woutergritter.plugintemplate.util.serialization;
 
 import me.woutergritter.plugintemplate.util.function.ThrowingFunction;
+import me.woutergritter.plugintemplate.util.function.ThrowingSupplier;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,8 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class BukkitDataInputStream extends DataInputStream {
@@ -83,30 +82,49 @@ public class BukkitDataInputStream extends DataInputStream {
         int size = readInt();
         List<T> list = new ArrayList<>(size);
 
-        for(int i = 0; i < size; i++) {
-            T t = deserializeFunction.apply(this);
-            if(t != null) {
-                list.add(t);
+        for (int i = 0; i < size; i++) {
+            T element = deserializeFunction.apply(this);
+            if (element != null) {
+                list.add(element);
             }
         }
 
         return list;
     }
 
-    public <T, U> Map<T, U> readMap(ThrowingFunction<DataInputStream, T, IOException> keyDeserializeFunction,
-                                    ThrowingFunction<DataInputStream, U, IOException> valueDeserializeFunction) throws IOException {
+    public <T> List<T> readList(ThrowingSupplier<T, IOException> deserializeFunction) throws IOException {
+        return readList(_dis -> deserializeFunction.get());
+    }
+
+    public <T, U> Map<T, U> readMap(ThrowingFunction<BukkitDataInputStream, T, IOException> keyDeserializeFunction,
+                                    ThrowingFunction<BukkitDataInputStream, U, IOException> valueDeserializeFunction) throws IOException {
         int size = readInt();
         Map<T, U> map = new HashMap<>(size);
 
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             T key = keyDeserializeFunction.apply(this);
             U value = valueDeserializeFunction.apply(this);
 
-            if(key != null && value != null) {
+            if (key != null && value != null) {
                 map.put(key, value);
             }
         }
 
         return map;
+    }
+
+    public <T, U> Map<T, U> readMap(ThrowingFunction<BukkitDataInputStream, T, IOException> keyDeserializeFunction,
+                                    ThrowingSupplier<U, IOException> valueDeserializeFunction) throws IOException {
+        return readMap(keyDeserializeFunction, _dis -> valueDeserializeFunction.get());
+    }
+
+    public <T, U> Map<T, U> readMap(ThrowingSupplier<T, IOException> keyDeserializeFunction,
+                                    ThrowingFunction<BukkitDataInputStream, U, IOException> valueDeserializeFunction) throws IOException {
+        return readMap(_dis -> keyDeserializeFunction.get(), valueDeserializeFunction);
+    }
+
+    public <T, U> Map<T, U> readMap(ThrowingSupplier<T, IOException> keyDeserializeFunction,
+                                    ThrowingSupplier<U, IOException> valueDeserializeFunction) throws IOException {
+        return readMap(_dis -> keyDeserializeFunction.get(), _dis -> valueDeserializeFunction.get());
     }
 }
