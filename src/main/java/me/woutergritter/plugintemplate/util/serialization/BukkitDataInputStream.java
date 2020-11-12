@@ -14,25 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class BukkitDataInputStream extends DataInputStream {
     public BukkitDataInputStream(InputStream in) {
         super(in);
-    }
-
-    public <T extends Serializable> T read(Class<T> clazz) {
-        try {
-            Method deserialize = clazz.getMethod("deserialize", BukkitDataInputStream.class);
-
-            return (T) deserialize.invoke(null, this);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassCastException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     public Location readLocation() throws IOException {
@@ -107,7 +93,20 @@ public class BukkitDataInputStream extends DataInputStream {
         return list;
     }
 
-    public <T extends Serializable> List<T> readList(Class<T> clazz) throws IOException {
-        return readList(dis -> read(clazz));
+    public <T, U> Map<T, U> readMap(ThrowingFunction<DataInputStream, T, IOException> keyDeserializeFunction,
+                                    ThrowingFunction<DataInputStream, U, IOException> valueDeserializeFunction) throws IOException {
+        int size = readInt();
+        Map<T, U> map = new HashMap<>(size);
+
+        for(int i = 0; i < size; i++) {
+            T key = keyDeserializeFunction.apply(this);
+            U value = valueDeserializeFunction.apply(this);
+
+            if(key != null && value != null) {
+                map.put(key, value);
+            }
+        }
+
+        return map;
     }
 }

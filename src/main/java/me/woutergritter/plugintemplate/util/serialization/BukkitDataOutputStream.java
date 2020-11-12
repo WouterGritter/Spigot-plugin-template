@@ -10,15 +10,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 public class BukkitDataOutputStream extends DataOutputStream {
     public BukkitDataOutputStream(OutputStream out) {
         super(out);
-    }
-
-    public <T extends Serializable> void write(T t) throws IOException {
-        t.serialize(this);
     }
 
     public void writeLocation(Location location) throws IOException {
@@ -69,7 +66,17 @@ public class BukkitDataOutputStream extends DataOutputStream {
         }
     }
 
-    public <T extends Serializable> void writeList(Collection<T> list) throws IOException {
-        writeList(list, (dos, t) -> write(t));
+    public <T, U> void writeMap(Map<T, U> map, ThrowingBiConsumer<BukkitDataOutputStream, T, IOException> keySerializeFunction,
+                                ThrowingBiConsumer<BukkitDataOutputStream, U, IOException> valueSerializeFunction) throws IOException {
+        writeInt(map != null ? map.size() : 0);
+
+        if(map != null) {
+            for(T key : map.keySet()) {
+                U value = map.get(key);
+
+                keySerializeFunction.accept(this, key);
+                valueSerializeFunction.accept(this, value);
+            }
+        }
     }
 }
