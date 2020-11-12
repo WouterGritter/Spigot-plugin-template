@@ -59,17 +59,17 @@ public class BukkitDataOutputStream extends DataOutputStream {
 
     // -- Lists and maps -- //
 
-    public <T> void writeList(Collection<T> list, ThrowingBiConsumer<T, BukkitDataOutputStream, IOException> serializeFunction) throws IOException {
+    public <T> void writeList(Collection<T> list, ThrowingBiConsumer<BukkitDataOutputStream, T, IOException> serializeFunction) throws IOException {
         writeInt(list != null ? list.size() : 0);
 
         if(list != null) {
             for (T t : list) {
-                serializeFunction.accept(t, this);
+                serializeFunction.accept(this, t);
             }
         }
     }
 
     public <T extends Serializable> void writeList(Collection<T> list) throws IOException {
-        writeList(list, (t, dos) -> write(t));
+        writeList(list, (dos, t) -> write(t));
     }
 }
