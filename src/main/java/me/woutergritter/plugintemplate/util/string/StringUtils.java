@@ -4,7 +4,9 @@ public class StringUtils {
     private StringUtils() {
     }
 
-    public static String prettifyString(String s) {
+    public static String prettifyString(Object obj) {
+        String s = String.valueOf(obj);
+
         // Replace - and _ with spaces
         s = s.replace('-', ' ').replace('_', ' ');
 
@@ -14,7 +16,9 @@ public class StringUtils {
         return s;
     }
 
-    public static String toScreamingSnakeCase(String s) {
+    public static String toScreamingSnakeCase(Object obj) {
+        String s = String.valueOf(obj);
+
         // Replace space and - with _
         s = s.replace(' ', '_').replace('-', '_');
 
