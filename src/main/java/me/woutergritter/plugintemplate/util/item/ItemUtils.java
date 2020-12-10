@@ -46,6 +46,7 @@ public class ItemUtils {
     /**
      * 1.8.8 only implementation
      */
+    @Deprecated
     public static ItemStack create(Material material, int amount, int durability, String displayName, List<String> lore, Map<Enchantment, Integer> enchantments) {
         ItemStack res = create(material, amount, displayName, lore, enchantments);
         res.setDurability((short) durability);
