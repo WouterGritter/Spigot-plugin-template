@@ -106,7 +106,7 @@ public class ItemUtils {
             });
         }
 
-        if(conf.contains("hide-tooltips") && conf.getBoolean("hide-tooltips")) {
+        if(conf.getBoolean("hide-tooltips", false)) {
             for(ItemFlag itemFlag : ItemFlag.values()) {
                 if(itemFlag.name().startsWith("HIDE_")) {
                     itemMeta.addItemFlags(itemFlag);
@@ -160,6 +160,13 @@ public class ItemUtils {
                     LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) itemMeta;
                     leatherArmorMeta.setColor(color);
                 }
+            }
+        }
+
+        if(conf.getBoolean("glow-effect", false)) {
+            if(!itemMeta.hasEnchants()) {
+                itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 0, true);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
         }
 
