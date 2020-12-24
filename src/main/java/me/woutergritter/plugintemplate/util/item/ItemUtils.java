@@ -1,5 +1,6 @@
 package me.woutergritter.plugintemplate.util.item;
 
+import me.woutergritter.plugintemplate.util.color.ColorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -129,33 +130,7 @@ public class ItemUtils {
 
         if(conf.contains("leather-armor-color")) {
             if(itemMeta instanceof LeatherArmorMeta) {
-                String colorStr = conf.getString("leather-armor-color");
-                Color color = null;
-                try {
-                    color = (Color) Color.class.getField(colorStr.toUpperCase()).get(null);
-                }catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ignored) {}
-
-                if(color == null) {
-                    try{
-                        int red = -1;
-                        int green = -1;
-                        int blue = -1;
-
-                        if(colorStr.contains("0x") && colorStr.length() == 8) {
-                            red   = Integer.parseInt(colorStr.substring(2, 4), 16);
-                            green = Integer.parseInt(colorStr.substring(4, 6), 16);
-                            blue  = Integer.parseInt(colorStr.substring(6, 8), 16);
-                        }else if(colorStr.split(",").length == 3) {
-                            String[] parts = colorStr.split(",");
-                            red = Integer.parseInt(parts[0]);
-                            green = Integer.parseInt(parts[1]);
-                            blue = Integer.parseInt(parts[2]);
-                        }
-
-                        color = Color.fromRGB(red, green, blue);
-                    }catch(Exception ignored) {}
-                }
-
+                Color color = ColorUtils.fromString(conf.getString("leather-armor-color"));
                 if(color != null) {
                     LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) itemMeta;
                     leatherArmorMeta.setColor(color);
