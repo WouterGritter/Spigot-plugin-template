@@ -1,5 +1,7 @@
 package me.woutergritter.plugintemplate.util.string;
 
+import org.bukkit.ChatColor;
+
 public class StringUtils {
     private StringUtils() {
     }
@@ -26,5 +28,21 @@ public class StringUtils {
         s = s.toUpperCase();
 
         return s;
+    }
+
+    public static String createProgressBar(char c, int length, double completedPercent, ChatColor completedColor, ChatColor nonCompletedColor) {
+        StringBuilder sb = new StringBuilder(length + 4);
+        sb.append(completedColor);
+
+        int completedUntilIndex = (int) (completedPercent * length);
+        for(int i = 0; i < length; i++) {
+            if(completedUntilIndex == i) {
+                sb.append(nonCompletedColor);
+            }
+
+            sb.append(c);
+        }
+
+        return sb.toString();
     }
 }
