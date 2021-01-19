@@ -5,6 +5,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.function.Consumer;
+
 public class GUIItem {
     public static final int NO_SLOT = Integer.MAX_VALUE;
 
@@ -33,7 +35,7 @@ public class GUIItem {
                 is(other);
     }
 
-    public boolean insert(Inventory inv, int slot, Object... formattedItemArgs) {
+    public boolean insertModified(Inventory inv, int slot, Consumer<ItemStack> modifier, Object... formattedItemArgs) {
         if(relativeSlot != NO_SLOT) {
             // Override the slot!
             slot = getSlot(inv.getSize());
@@ -43,8 +45,13 @@ public class GUIItem {
             return false;
         }
 
-        ItemStack itemStack = ItemUtils.formatItemStack(
-                this.itemStack.clone(),
+        ItemStack itemStack = this.itemStack.clone();
+        if(modifier != null) {
+            modifier.accept(itemStack);
+        }
+
+        ItemUtils.formatItemStack(
+                itemStack,
                 formattedItemArgs
         );
 
@@ -53,8 +60,16 @@ public class GUIItem {
         return true;
     }
 
+    public boolean insert(Inventory inv, int slot, Object... formattedItemArgs) {
+        return insertModified(inv, slot, null, formattedItemArgs);
+    }
+
+    public boolean insertModified(Inventory inv, Consumer<ItemStack> modifier, Object... formattedItemArgs) {
+        return insertModified(inv, -1, modifier, formattedItemArgs);
+    }
+
     public boolean insert(Inventory inv, Object... formattedItemArgs) {
-        return insert(inv, -1, formattedItemArgs);
+        return insertModified(inv, null, formattedItemArgs);
     }
 
     public ItemStack getFormattedItemStack(Object... args) {

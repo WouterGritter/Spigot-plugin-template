@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class GUIInventory<T extends GUIParams> {
     private final GUI<T> parent;
@@ -56,43 +57,67 @@ public class GUIInventory<T extends GUIParams> {
         return this;
     }
 
-    public GUIInventory<T> borders(String itemName, Object... formattedItemArgs) {
+    public GUIInventory<T> bordersModified(String itemName, Consumer<ItemStack> modifier, Object... formattedItemArgs) {
         for(int x = 0; x < 9; x++) {
-            insertSlot(itemName, x, formattedItemArgs);
-            insertSlot(itemName, x + (parent.height - 1) * 9, formattedItemArgs);
+            insertSlotModified(itemName, x, modifier, formattedItemArgs);
+            insertSlotModified(itemName, x + (parent.height - 1) * 9, modifier, formattedItemArgs);
         }
 
         for(int y = 1; y < parent.height - 1; y++) {
-            insertSlot(itemName, y * 9, formattedItemArgs);
-            insertSlot(itemName, y * 9 + 8, formattedItemArgs);
+            insertSlotModified(itemName, y * 9, modifier, formattedItemArgs);
+            insertSlotModified(itemName, y * 9 + 8, modifier, formattedItemArgs);
+        }
+
+        return this;
+    }
+
+    public GUIInventory<T> borders(String itemName, Object... formattedItemArgs) {
+        bordersModified(itemName, null, formattedItemArgs);
+
+        return this;
+    }
+
+    public GUIInventory<T> fillModified(String itemName, Consumer<ItemStack> modifier, Object... formattedItemArgs) {
+        for(int slot = 0; slot < inventory.getSize(); slot++) {
+            insertSlotModified(itemName, slot, modifier, formattedItemArgs);
         }
 
         return this;
     }
 
     public GUIInventory<T> fill(String itemName, Object... formattedItemArgs) {
-        for(int slot = 0; slot < inventory.getSize(); slot++) {
-            insertSlot(itemName, slot, formattedItemArgs);
+        fillModified(itemName, null, formattedItemArgs);
+
+        return this;
+    }
+
+    public GUIInventory<T> insertSlotModified(String itemName, int slot, Consumer<ItemStack> modifier, Object... formattedItemArgs) {
+        GUIItem item = getItem(itemName);
+        if(item != null) {
+            item.insertModified(inventory, slot, modifier, formattedItemArgs);
+
+            if(opened) {
+                params.player.updateInventory();
+            }
         }
 
         return this;
     }
 
     public GUIInventory<T> insertSlot(String itemName, int slot, Object... formattedItemArgs) {
-        GUIItem item = getItem(itemName);
-        if(item != null) {
-            item.insert(inventory, slot, formattedItemArgs);
-        }
+        insertSlotModified(itemName, slot, null, formattedItemArgs);
 
-        if(opened) {
-            params.player.updateInventory();
-        }
+        return this;
+    }
+
+    public GUIInventory<T> insertModified(String itemName, Consumer<ItemStack> modifier, Object... formattedItemArgs) {
+        insertSlotModified(itemName, -1, modifier, formattedItemArgs);
 
         return this;
     }
 
     public GUIInventory<T> insert(String itemName, Object... formattedItemArgs) {
-        insertSlot(itemName, -1, formattedItemArgs);
+        insertModified(itemName, null, formattedItemArgs);
 
         return this;
     }
