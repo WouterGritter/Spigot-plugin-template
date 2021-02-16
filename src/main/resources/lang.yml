@@ -12,6 +12,7 @@ common:
   no-offline-player-found: '&cNo player called ''%s'' has ever played on the server!'
   invalid-number: '&cInvalid number ''%s''!'
   invalid-decimal-number: '&cInvalid decimal number ''%s''!'
+  invalid-time: '&cInvalid time ''%s''! Examples: 16s, 2m, 3h, 1.5d, 4w, 1.2M, 0.5y'
 
 example-cmd:
   output: '&aThe /example command is working!'

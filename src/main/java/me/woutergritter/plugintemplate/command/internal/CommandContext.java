@@ -123,4 +123,50 @@ public class CommandContext {
             throw new CommandInterrupt(true, "common.invalid-decimal-number", args[argIndex]);
         }
     }
+
+    public int checkTime(int argIndex) {
+        String str = args[argIndex];
+        if(str.length() < 2) {
+            throw new CommandInterrupt(true, "common.invalid-time", args[argIndex]);
+        }
+
+        String timeStr = str.substring(0, str.length() - 1);
+        double time;
+
+        try{
+            time = Double.parseDouble(timeStr);
+        }catch(NumberFormatException e) {
+            throw new CommandInterrupt(true, "common.invalid-time", args[argIndex]);
+        }
+
+        int multiplier;
+        char multiplierChar = str.charAt(str.length() - 1);
+        switch(multiplierChar) {
+            case 's': // Seconds
+                multiplier = 1;
+                break;
+            case 'm': // Minutes
+                multiplier = 60;
+                break;
+            case 'h': // Hours
+                multiplier = 60 * 60;
+                break;
+            case 'd': // Days
+                multiplier = 60 * 60 * 24;
+                break;
+            case 'w': // Weeks
+                multiplier = 60 * 60 * 24 * 7;
+                break;
+            case 'M': // Months
+                multiplier = 60 * 60 * 24 * 30;
+                break;
+            case 'y': // Years
+                multiplier = 60 * 60 * 24 * 365;
+                break;
+            default:
+                throw new CommandInterrupt(true, "common.invalid-time", args[argIndex]);
+        }
+
+        return (int) Math.round(time * multiplier);
+    }
 }
