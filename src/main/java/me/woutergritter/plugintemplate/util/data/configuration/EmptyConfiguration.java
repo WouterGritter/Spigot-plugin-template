@@ -34,7 +34,7 @@ public class EmptyConfiguration implements Configuration {
         return false;
     }
 
-    @Override
+    // 1.8 doesnt contain this method - don't override
     public boolean contains(String path, boolean ignoreDefault) {
         return false;
     }
@@ -228,22 +228,22 @@ public class EmptyConfiguration implements Configuration {
         return Collections.emptyList();
     }
 
-    @Override
+    // 1.8 doesnt contain this method - don't override
     public <T> T getObject(String path, Class<T> clazz) {
         return null;
     }
 
-    @Override
+    // 1.8 doesnt contain this method - don't override
     public <T> T getObject(String path, Class<T> clazz, T def) {
         return def;
     }
 
-    @Override
+    // 1.8 doesnt contain this method - don't override
     public <T extends ConfigurationSerializable> T getSerializable(String path, Class<T> clazz) {
         return null;
     }
 
-    @Override
+    // 1.8 doesnt contain this method - don't override
     public <T extends ConfigurationSerializable> T getSerializable(String path, Class<T> clazz, T def) {
         return def;
     }
@@ -308,17 +308,17 @@ public class EmptyConfiguration implements Configuration {
         return false;
     }
 
-    @Override
+    // 1.8 doesnt contain this method - don't override
     public Location getLocation(String path) {
         return null;
     }
 
-    @Override
+    // 1.8 doesnt contain this method - don't override
     public Location getLocation(String path, Location def) {
         return def;
     }
 
-    @Override
+    // 1.8 doesnt contain this method - don't override
     public boolean isLocation(String path) {
         return false;
     }
