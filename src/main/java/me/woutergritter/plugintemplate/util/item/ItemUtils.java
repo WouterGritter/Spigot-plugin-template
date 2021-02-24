@@ -1,5 +1,6 @@
 package me.woutergritter.plugintemplate.util.item;
 
+import com.google.common.collect.ForwardingMultimap;
 import me.woutergritter.plugintemplate.util.color.ColorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,10 +12,14 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class ItemUtils {
     private ItemUtils() {
@@ -128,13 +133,10 @@ public class ItemUtils {
             });
         }
 
-        if(conf.contains("leather-armor-color")) {
-            if(itemMeta instanceof LeatherArmorMeta) {
-                Color color = ColorUtils.fromString(conf.getString("leather-armor-color"));
-                if(color != null) {
-                    LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) itemMeta;
-                    leatherArmorMeta.setColor(color);
-                }
+        if(conf.contains("leather-armor-color") && itemMeta instanceof LeatherArmorMeta) {
+            Color color = ColorUtils.fromString(conf.getString("leather-armor-color"));
+            if(color != null) {
+                ((LeatherArmorMeta) itemMeta).setColor(color);
             }
         }
 
@@ -145,8 +147,38 @@ public class ItemUtils {
             }
         }
 
+        if(conf.contains("skull-owner") && itemMeta instanceof SkullMeta) {
+            String skullOwner = conf.getString("skull-owner");
+            ((SkullMeta) itemMeta).setOwner(skullOwner);
+        }
+
+        if(conf.contains("skull-texture") && itemMeta instanceof SkullMeta) {
+            System.out.println("setting stull texture");
+            String skullTexture = conf.getString("skull-texture");
+            setSkullTexture((SkullMeta) itemMeta, skullTexture);
+        }
+
         res.setItemMeta(itemMeta);
         return res;
+    }
+
+    public static void setSkullTexture(SkullMeta skullMeta, String skullTexture) {
+        try {
+            Object profile = Class.forName("com.mojang.authlib.GameProfile")
+                    .getConstructor(UUID.class, String.class).newInstance(UUID.randomUUID(), null);
+
+            ForwardingMultimap propertyMap = (ForwardingMultimap) profile.getClass().getMethod("getProperties").invoke(profile);
+
+            Object property = Class.forName("com.mojang.authlib.properties.Property")
+                    .getConstructor(String.class, String.class).newInstance("textures", skullTexture);
+            propertyMap.put("textures", property);
+
+            Field profileField = skullMeta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(skullMeta, profile);
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
