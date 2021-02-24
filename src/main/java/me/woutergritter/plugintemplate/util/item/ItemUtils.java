@@ -153,7 +153,6 @@ public class ItemUtils {
         }
 
         if(conf.contains("skull-texture") && itemMeta instanceof SkullMeta) {
-            System.out.println("setting stull texture");
             String skullTexture = conf.getString("skull-texture");
             setSkullTexture((SkullMeta) itemMeta, skullTexture);
         }
