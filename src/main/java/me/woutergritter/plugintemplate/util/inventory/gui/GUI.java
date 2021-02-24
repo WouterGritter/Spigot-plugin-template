@@ -29,13 +29,15 @@ public abstract class GUI<T extends GUIParams> {
         this.height = conf.getInt("height", 3);
 
         ConfigurationSection itemsConf = conf.getConfigurationSection("items");
-        itemsConf.getKeys(false).forEach(key -> {
-            ConfigurationSection itemConf = itemsConf.getConfigurationSection(key);
-            boolean success = loadItem(itemConf);
-            if(!success) {
-                Main.instance().getLogger().warning("Could not load item '" + key + "' for GUI '" + title + "'.");
-            }
-        });
+        if(itemsConf != null) {
+            itemsConf.getKeys(false).forEach(key -> {
+                ConfigurationSection itemConf = itemsConf.getConfigurationSection(key);
+                boolean success = loadItem(itemConf);
+                if (!success) {
+                    Main.instance().getLogger().warning("Could not load item '" + key + "' for GUI '" + title + "'.");
+                }
+            });
+        }
     }
 
     public abstract void open(T params);
